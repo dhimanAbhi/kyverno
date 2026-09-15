@@ -199,7 +199,7 @@ func (m *mockFailingProvider) Fetch(ctx context.Context, mutate bool) []Policy {
 	return nil
 }
 
-func (m *mockFailingProvider) MatchesMutateExisting(context.Context, admission.Attributes, *admissionv1.AdmissionRequest, *corev1.Namespace) []string {
+func (m *mockFailingProvider) MatchesMutateExisting(context.Context, admission.Attributes, *admissionv1.AdmissionRequest, *corev1.Namespace, func() (map[string]any, error)) []string {
 	return nil
 }
 
@@ -897,7 +897,7 @@ func TestHandlePolicy_ExtractionMode(t *testing.T) {
 		"", admission.Create, nil, false, &user.DefaultInfo{},
 	)
 
-	ruleResponse, patched := eng.handlePolicy(context.Background(), policy, attr, admissionv1.AdmissionRequest{}, nil, false)
+	ruleResponse, patched := eng.handlePolicy(context.Background(), policy, attr, admissionv1.AdmissionRequest{}, nil, nil, false)
 
 	assert.Len(t, ruleResponse.Rules, 1)
 	assert.Equal(t, engineapi.RuleStatusPass, ruleResponse.Rules[0].Status())
